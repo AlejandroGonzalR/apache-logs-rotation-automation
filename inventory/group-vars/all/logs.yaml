@@ -1,0 +1,6 @@
+---
+logrotate_config_filepath: '/etc/logrotate.d/apache'
+apache_inventory:
+  log_directory: '/var/log/apache'
+  user: 'www-data'
+  group: 'www-data'

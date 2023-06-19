@@ -1,0 +1,14 @@
+{{ apache_log_directory }}/*.log {
+  daily
+  size {{ apache_log_size }}
+  missingok
+  rotate 7
+  compress
+  delaycompress
+  notifempty
+  create 0640 {{ apache_user }} {{ apache_group }}
+  sharedscripts
+  postrotate
+      /etc/init.d/apache2 reload > /dev/null
+  endscript
+}

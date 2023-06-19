@@ -1,0 +1,29 @@
+---
+- name: Install logrotate
+  package:
+    name: logrotate
+    state: present
+
+- name: Create logrotate config file
+  template:
+    src: logrotate.conf.j2
+    dest: '{{ logrotate_config_filepath }}'
+  vars:
+    apache_log_directory: '{{ apache_inventory.log_directory }}'
+    apache_log_size: '10M'
+    apache_user: '{{ apache_inventory.user }}'
+    apache_group: '{{ apache_inventory.group }}'
+
+- name: Restart logrotate service
+  service:
+    name: logrotate
+    state: restarted
+
+- name: Execute logrotate
+  shell: logrotate --debug {{ logrotate_config_filepath }}
+  register: logrotate_result_output
+  failed_when: logrotate_result_output.rc > 0
+
+- name: Debug logrotate return code
+  debug:
+    msg: 'Logrotate execution finished with {{ logrotate_result_output.rc }} status code'
